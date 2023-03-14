@@ -7,8 +7,6 @@ const validateName = require('./middlewares/validateName');
 const auth = require('./middlewares/auth');
 const validateAge = require('./middlewares/validateAge');
 const validateTalk = require('./middlewares/validateTalk');
-const validatewatchedAt = require('./middlewares/validatewatchedAt');
-const validateRate = require('./middlewares/validateRate');
 
 const app = express();
 app.use(express.json());
@@ -46,18 +44,18 @@ app.get('/talker/:id', async (req, res) => {
     return res.status(200).json(talker);
 });
 
-app.delete('/talker/:id', auth, async (req, res) => {
-  const { id } = req.params;
-  try {
-   const talkers = await fsFuncs.readFile();
-   const newTalkers = talkers.filter((talker) => talker.id !== Number(id));
-   fsFuncs.writeFile(newTalkers);
-   res.status(204).end();
-  } catch (err) {
-   res.status(500).send({ message: err.message });
-  }
+// app.delete('/talker/:id', auth, async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//    const talkers = await fsFuncs.readFile();
+//    const newTalkers = talkers.filter((talker) => talker.id !== Number(id));
+//    fsFuncs.writeFile(newTalkers);
+//    res.status(204).end();
+//   } catch (err) {
+//    res.status(500).send({ message: err.message });
+//   }
 
-})
+// })
 
 app.post('/login', validateEmail, validadePassword, (req, res) => {
   try {
@@ -67,25 +65,35 @@ app.post('/login', validateEmail, validadePassword, (req, res) => {
     res.status(500).send({ message: err.message });
  }
 })
+
+app.use(auth);
+app.use(validateName);
+app.use(validateAge);
+app.use(validateTalk);
   
-// app.post('/talker', 
-// auth, 
-// validateName, 
-// validateAge, 
-// validateTalk,
-// validateRate,
-// validatewatchedAt, 
-// async (req, res) => {
-//   try {
-//   const body = req.body
-//   const talkers = await fsFuncs.readFile();
-//   const newTalker = { id: talkers[talkers.length - 1].id + 1, ...body };
-//   talkers.push(newTalker);
-//   fsFuncs.writeFile(talkers);
-//   res.status(201).json(newTalker);
-//   } catch (err) {
-//     res.status(500).send({ message: err.message });
-//   }
+app.post('/talker', async (req, res) => {
+  const { name, age, talk } = req.body
+  const talkers = await fsFuncs.readFile();
+  const newTalker = { id: talkers.length + 1, name, age, talk };
+  talkers.push(newTalker);
+  await fsFuncs.writeFile(talkers);
+  res.status(201).json(newTalker);
+})
+
+// app.put('/talker/:id',
+// auth, validateName, async (req, res) => {
+//   const { id } = req.params;
+//   const body = req.body;
+//     const talkers = await fsFuncs.readFile();
+//     let index = talkers.findIndex((talker) => talker.id === Number(id));
+//     if(index === -1) {
+//       return res.status(404).json({
+//         "message": "Pessoa palestrante não encontrada"
+//       });
+//     }
+//     talkers[index] = {id: Number(id), ...body};
+//     fsFuncs.writeFile(talkers);
+//     return res.status(200).json(talkers[index]);
 // })
 
 
