@@ -80,21 +80,21 @@ app.post('/talker', async (req, res) => {
   res.status(201).json(newTalker);
 })
 
-// app.put('/talker/:id',
-// auth, validateName, async (req, res) => {
-//   const { id } = req.params;
-//   const body = req.body;
-//     const talkers = await fsFuncs.readFile();
-//     let index = talkers.findIndex((talker) => talker.id === Number(id));
-//     if(index === -1) {
-//       return res.status(404).json({
-//         "message": "Pessoa palestrante não encontrada"
-//       });
-//     }
-//     talkers[index] = {id: Number(id), ...body};
-//     fsFuncs.writeFile(talkers);
-//     return res.status(200).json(talkers[index]);
-// })
+app.put('/talker/:id',
+auth, validateName, async (req, res) => {
+  const { id } = req.params;
+  const { name, age, talk } = req.body;
+    const talkers = await fsFuncs.readFile();
+    let index = talkers.findIndex((talker) => talker.id === Number(id));
+    if(index === -1) {
+      return res.status(404).json({
+        message: "Pessoa palestrante não encontrada"
+      });
+    }
+    talkers[index] = {id: Number(id), name, age, talk};
+    fsFuncs.writeFile(talkers);
+    return res.status(200).json(talkers[index]);
+})
 
 
 
