@@ -12,6 +12,16 @@ const readFile = async () => {
     }
 }
 
+const writeFile = async (content) => {
+    try {
+        await fs.writeFile(talksPath, JSON.stringify(content));
+    } catch (e) {
+        console.error('Erro ao salvar o arquivo', e.message);
+        return null;
+    }
+}
+
 module.exports = {
     readFile,
+    writeFile,
 }
