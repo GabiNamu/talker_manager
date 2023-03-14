@@ -44,18 +44,18 @@ app.get('/talker/:id', async (req, res) => {
     return res.status(200).json(talker);
 });
 
-// app.delete('/talker/:id', auth, async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//    const talkers = await fsFuncs.readFile();
-//    const newTalkers = talkers.filter((talker) => talker.id !== Number(id));
-//    fsFuncs.writeFile(newTalkers);
-//    res.status(204).end();
-//   } catch (err) {
-//    res.status(500).send({ message: err.message });
-//   }
+app.delete('/talker/:id', auth, async (req, res) => {
+  const { id } = req.params;
+  try {
+   const talkers = await fsFuncs.readFile();
+   const newTalkers = talkers.filter((talker) => talker.id !== Number(id));
+   fsFuncs.writeFile(newTalkers);
+   res.status(204).end();
+  } catch (err) {
+   res.status(500).send({ message: err.message });
+  }
 
-// })
+})
 
 app.post('/login', validateEmail, validadePassword, (req, res) => {
   try {
