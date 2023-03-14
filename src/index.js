@@ -15,6 +15,7 @@ app.get('/', (_request, response) => {
 app.get('/talker', async (req, res) => {
    try {
     const talkers = await fsFuncs.readFile();
+    console.log(talkers);
     if(!talkers) {
       return res.status(200).json([]);
     }
@@ -22,6 +23,18 @@ app.get('/talker', async (req, res) => {
    } catch (err) {
     return res.status(500).send({ message: err.message });
    }
+})
+
+app.get('/talker/:id', async (req, res) => {
+  const { id } = req.params;
+    const talkers = await fsFuncs.readFile();
+    const talker = talkers.find((talker) => talker.id === Number(id));
+    if(talker === undefined) {
+      return res.status(404).json({
+        "message": "Pessoa palestrante não encontrada"
+      });
+    }
+    return res.status(200).json(talker);
 })
 
 app.listen(PORT, () => {
