@@ -1,5 +1,6 @@
 const express = require('express');
 const fsFuncs = require('./funcsFs');
+const generateToken = require('./generateToken');
 
 const app = express();
 app.use(express.json());
@@ -35,7 +36,23 @@ app.get('/talker/:id', async (req, res) => {
       });
     }
     return res.status(200).json(talker);
+});
+
+app.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+  
+  if([email, password].includes(undefined)) {
+    return res.status(401).json({ message: 'Campos ausentes!' });
+  }
+  const token = generateToken();
+  res.status(200).json({token: token});
+ } catch (err) {
+  res.status(500).send({ message: err.message });
+ }
 })
+  
+  
 
 app.listen(PORT, () => {
   console.log('Online');
