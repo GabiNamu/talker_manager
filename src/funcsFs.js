@@ -8,9 +8,9 @@ const readFile = async () => {
         const data = await fs.readFile(talksPath);
         return JSON.parse(data);
     } catch (err) {
-        console.error(`Arquivo não pôde ser lido: ${error}`)
+        console.error(`Arquivo não pôde ser lido: ${err}`);
     }
-}
+};
 
 const writeFile = async (content) => {
     try {
@@ -19,9 +19,9 @@ const writeFile = async (content) => {
         console.error('Erro ao salvar o arquivo', e.message);
         return null;
     }
-}
+};
 
 module.exports = {
     readFile,
     writeFile,
-}
+};
