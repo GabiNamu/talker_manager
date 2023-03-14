@@ -1,4 +1,5 @@
 const express = require('express');
+const fsFuncs = require('./funcsFs');
 
 const app = express();
 app.use(express.json());
@@ -10,6 +11,18 @@ const PORT = process.env.PORT || '3001';
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
+
+app.get('/talker', async (req, res) => {
+   try {
+    const talkers = await fsFuncs.readFile();
+    if(!talkers) {
+      return res.status(200).json([]);
+    }
+    return res.status(200).json(talkers)
+   } catch (err) {
+    return res.status(500).send({ message: err.message });
+   }
+})
 
 app.listen(PORT, () => {
   console.log('Online');
