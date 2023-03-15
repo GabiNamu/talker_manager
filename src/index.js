@@ -7,6 +7,7 @@ const validateName = require('./middlewares/validateName');
 const auth = require('./middlewares/auth');
 const validateAge = require('./middlewares/validateAge');
 const validateQueryRate = require('./middlewares/validateQueryRate');
+const validateQueryWatchedAt = require('./middlewares/validateQueryWatchedAt');
 const { validateTalk, validateRate, validateWatchedAt } = require('./middlewares/validateTalk');
 
 const app = express();
@@ -15,17 +16,67 @@ app.use(express.json());
 const HTTP_OK_STATUS = 200;
 const PORT = process.env.PORT || '3001';
 
-const validateParams = async (req, res, next) => {
-  const { q, rate } = req.query;
+const validateParamsRate = async (req, res, next) => {
+  const { q, rate, date } = req.query;
     const talkers = await fsFuncs.readFile();
-    if (!rate && q) {
-        const filteredTalkers = talkers
-      .filter(({ name }) => name.toLowerCase().includes(q.toLowerCase()));
-      return res.status(200).json(filteredTalkers);
-      }
-      if (rate && q === undefined) {
+      if (rate && !q && !date) {
         const filteredTalkers = talkers
         .filter((talker) => talker.talk.rate === Number(rate));
+       return res.status(200).json(filteredTalkers);
+      }     
+    next();
+};
+
+const validateParamsRateQ = async (req, res, next) => {
+  const { q, rate, date } = req.query;
+  const talkers = await fsFuncs.readFile();
+  if (rate && q && !date) {
+    const filteredTalkers = talkers
+    .filter((t) => t.name.toLowerCase().includes(q.toLowerCase()) && t.talk.rate === Number(rate));
+    return res.status(200).json(filteredTalkers);
+  }
+  next();
+};
+
+const validateParamsQDate = async (req, res, next) => {
+  const { q, rate, date } = req.query;
+  const talkers = await fsFuncs.readFile();
+  if (!rate && q && date) {
+    const filteredTalkers = talkers
+    .filter((t) => t.name.toLowerCase().includes(q.toLowerCase()) && t.talk.watchedAt === date);
+    return res.status(200).json(filteredTalkers);
+  }
+  next();
+};
+
+const validateParamsRateDate = async (req, res, next) => {
+  const { q, rate, date } = req.query;
+  const talkers = await fsFuncs.readFile();
+  if (rate && !q && date) {
+    const filteredTalkers = talkers
+    .filter((t) => t.talk.rate === Number(rate) && t.talk.watchedAt === date);
+    return res.status(200).json(filteredTalkers);
+  }
+  next();
+};
+
+const validateParamnsQ = async (req, res, next) => {
+  const { q, rate, date } = req.query;
+    const talkers = await fsFuncs.readFile();
+  if (!rate && !date && q) {
+    const filteredTalkers = talkers
+  .filter(({ name }) => name.toLowerCase().includes(q.toLowerCase()));
+  return res.status(200).json(filteredTalkers);
+  }
+  next();
+};
+
+const validateParsmsDate = async (req, res, next) => {
+  const { q, rate, date } = req.query;
+    const talkers = await fsFuncs.readFile();
+      if (date && !rate && !q) {
+        const filteredTalkers = talkers
+        .filter((talker) => talker.talk.watchedAt === date);
        return res.status(200).json(filteredTalkers);
       }
     next();
@@ -49,15 +100,19 @@ app.get('/talker', async (req, res) => {
    }
 });
 
-app.get('/talker/search', auth, validateQueryRate, validateParams, async (req, res) => {
-  const { q, rate } = req.query;
+app.get('/talker/search', auth, validateQueryRate, validateQueryWatchedAt, 
+validateParamnsQ, validateParamsRate, 
+validateParsmsDate, validateParamsRateQ, 
+validateParamsQDate, validateParamsRateDate, async (req, res) => {
+  const { q, rate, date } = req.query;
   const talkers = await fsFuncs.readFile();
-  if (!q && !rate) {
+  if (!q && !rate && !date) {
     return res.status(200).json(talkers);
   }
   const filteredTalkers = talkers
-  .filter((t) => t.name.toLowerCase().includes(q.toLowerCase()) && t.talk.rate === Number(rate));
-  return res.status(200).json(filteredTalkers);
+    .filter((t) => t.name.toLowerCase().includes(q.toLowerCase())
+     && t.talk.rate === Number(rate) && t.talk.watchedAt === date);
+    return res.status(200).json(filteredTalkers);
 });
 
 app.get('/talker/:id', async (req, res) => {
