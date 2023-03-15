@@ -120,7 +120,7 @@ validateParamsQDate, validateParamsRateDate, async (req, res) => {
 app.get('/talker/db', async (req, res) => {
   const [result] = await findAll();
   if (!result) {
-    return res.status(200).json(result);
+    return res.status(200).json([]);
   }
   const formatResult = result.map((t) => ({
     age: t.age,
