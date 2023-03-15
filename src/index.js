@@ -84,7 +84,7 @@ const validateParsmsDate = async (req, res, next) => {
     next();
 };
 
-// não remova esse endpoint, e para o avaliador funcion
+// não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
