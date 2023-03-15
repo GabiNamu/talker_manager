@@ -9,7 +9,6 @@ const validateAge = require('./middlewares/validateAge');
 const validateQueryRate = require('./middlewares/validateQueryRate');
 const validateQueryWatchedAt = require('./middlewares/validateQueryWatchedAt');
 const validateReqRate = require('./middlewares/validateReqRate');
-const connection = require('./db/connection');
 const { findAll } = require('./db/talkersDB');
 const { validateTalk, validateRate, validateWatchedAt } = require('./middlewares/validateTalk');
 
@@ -217,9 +216,4 @@ auth, validateName, async (req, res) => {
 
 app.listen(PORT, async () => {
   console.log('Online');
-
-  const [result] = await connection.execute('SELECT 1');
-  if (result) {
-    console.log('MySQL connection OK');
-  }
 });
