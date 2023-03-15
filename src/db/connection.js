@@ -1,11 +1,11 @@
 const mysql = require('mysql2/promise');
 
 const connection = mysql.createPool({
-  host: 'db',
-  port: 3306,
-  user: 'root',
-  password: 'password',
-  database: 'TalkerDB',
+  host: process.env.MYSQL_HOST || 'db',
+  port: process.env.MYSQL_PORT || 3306,
+  user: process.env.MYSQL_USER || 'root',
+  password: process.env.MYSQL_PASSWORD || 'password',
+  database: process.env.MYSQL_DATABASE_NAME || 'TalkerDB',
 });
 
 module.exports = connection;
