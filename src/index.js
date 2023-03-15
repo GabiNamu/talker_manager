@@ -9,6 +9,8 @@ const validateAge = require('./middlewares/validateAge');
 const validateQueryRate = require('./middlewares/validateQueryRate');
 const validateQueryWatchedAt = require('./middlewares/validateQueryWatchedAt');
 const validateReqRate = require('./middlewares/validateReqRate');
+const connection = require('./db/connection');
+const { findAll } = require('./db/talkersDB');
 const { validateTalk, validateRate, validateWatchedAt } = require('./middlewares/validateTalk');
 
 const app = express();
@@ -116,6 +118,23 @@ validateParamsQDate, validateParamsRateDate, async (req, res) => {
     return res.status(200).json(filteredTalkers);
 });
 
+app.get('/talker/db', async (req, res) => {
+  const [result] = await findAll();
+  if (!result) {
+    return res.status(200).json(result);
+  }
+  const formatResult = result.map((t) => ({
+    age: t.age,
+    id: t.id,
+    name: t.name,
+    talk: {
+      rate: t.talk_rate,
+      watchedAt: t.talk_watched_at,
+    },
+  }));
+  res.status(200).json(formatResult);
+});
+
 app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
     const talkers = await fsFuncs.readFile();
@@ -196,6 +215,11 @@ auth, validateName, async (req, res) => {
     return res.status(200).json(talkers[index]);
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log('Online');
+
+  const [result] = await connection.execute('SELECT 1');
+  if (result) {
+    console.log('MySQL connection OK');
+  }
 });
