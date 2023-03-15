@@ -75,7 +75,7 @@ const validateParamnsQ = async (req, res, next) => {
 
 const validateParsmsDate = async (req, res, next) => {
   const { q, rate, date } = req.query;
-    const talkers = await fsFuncs.readFile();
+  const talkers = await fsFuncs.readFile();
       if (date && !rate && !q) {
         const filteredTalkers = talkers
         .filter((talker) => talker.talk.watchedAt === date);
