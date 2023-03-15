@@ -1,13 +1,16 @@
-# :construction: README customizado em construção ! :construction:
-<!-- Olá, Tryber!
-Esse é apenas um arquivo inicial para o README do seu projeto no qual você pode customizar e reutilizar todas as vezes que for executar o trybe-publisher.
+# Talker Manager
+Talker Manaager was a project made for study purposes and it was my first contact with node.js and express.
+### In this project I:
+- developed a CRUD API of talkers;
+- Develop some endpoints that will read and write:
+  - SQL database;
+  - a file using the fs module.
+  
+### Main technologies:
+- Docker;
+- Node.js;
+- Express;
+- MySql;
 
-Para deixá-lo com a sua cara, basta alterar o seguinte arquivo da sua máquina: ~/.student-repo-publisher/custom/_NEW_README.md
-
-É essencial que você preencha esse documento por conta própria, ok?
-Não deixe de usar nossas dicas de escrita de README de projetos, e deixe sua criatividade brilhar!
-:warning: IMPORTANTE: você precisa deixar nítido:
-- quais arquivos/pastas foram desenvolvidos por você; 
-- quais arquivos/pastas foram desenvolvidos por outra pessoa estudante;
-- quais arquivos/pastas foram desenvolvidos pela Trybe.
--->
+## Contributors: 
+I made the src folder and all the content inside it. the other files were made by Trybe.
