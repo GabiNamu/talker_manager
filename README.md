@@ -8,9 +8,10 @@ Talker Manaager was a project made for study purposes and it was my first contac
   
 ### Main technologies:
 - Docker;
+- JavaScript;
 - Node.js;
 - Express;
-- MySql;
+- MySql.
 
 ## Contributors: 
 I made the src folder and all the content inside it. the other files were made by Trybe.
