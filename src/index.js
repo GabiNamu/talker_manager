@@ -6,6 +6,7 @@ const validadePassword = require('./middlewares/validatePassword');
 const validateName = require('./middlewares/validateName');
 const auth = require('./middlewares/auth');
 const validateAge = require('./middlewares/validateAge');
+const validateQueryRate = require('./middlewares/validateQueryRate');
 const { validateTalk, validateRate, validateWatchedAt } = require('./middlewares/validateTalk');
 
 const app = express();
@@ -13,6 +14,22 @@ app.use(express.json());
 
 const HTTP_OK_STATUS = 200;
 const PORT = process.env.PORT || '3001';
+
+const validateParams = async (req, res, next) => {
+  const { q, rate } = req.query;
+    const talkers = await fsFuncs.readFile();
+    if (!rate && q) {
+        const filteredTalkers = talkers
+      .filter(({ name }) => name.toLowerCase().includes(q.toLowerCase()));
+      return res.status(200).json(filteredTalkers);
+      }
+      if (rate && q === undefined) {
+        const filteredTalkers = talkers
+        .filter((talker) => talker.talk.rate === Number(rate));
+       return res.status(200).json(filteredTalkers);
+      }
+    next();
+};
 
 // não remova esse endpoint, e para o avaliador funcion
 app.get('/', (_request, response) => {
@@ -32,15 +49,15 @@ app.get('/talker', async (req, res) => {
    }
 });
 
-app.get('/talker/search', auth, async (req, res) => {
-  const { q } = req.query;
+app.get('/talker/search', auth, validateQueryRate, validateParams, async (req, res) => {
+  const { q, rate } = req.query;
   const talkers = await fsFuncs.readFile();
-  if (!q) {
+  if (!q && !rate) {
     return res.status(200).json(talkers);
   }
   const filteredTalkers = talkers
-  .filter(({ name }) => name.toLowerCase().includes(q.toLowerCase()));
-  res.status(200).json(filteredTalkers);
+  .filter((t) => t.name.toLowerCase().includes(q.toLowerCase()) && t.talk.rate === Number(rate));
+  return res.status(200).json(filteredTalkers);
 });
 
 app.get('/talker/:id', async (req, res) => {
