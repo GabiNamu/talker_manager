@@ -202,8 +202,8 @@ app.put('/talker/:id',
 auth, validateName, async (req, res) => {
   const { id } = req.params;
   const { name, age, talk } = req.body;
-    const talkers = await fsFuncs.readFile();
-    const index = talkers.findIndex((talker) => talker.id === Number(id));
+  const talkers = await fsFuncs.readFile();
+  const index = talkers.findIndex((talker) => talker.id === Number(id));
     if (index === -1) {
       return res.status(404).json({
         message: 'Pessoa palestrante não encontrada',
