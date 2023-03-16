@@ -1,7 +1,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-const talksPath = path.resolve(__dirname, './talker.json');
+const talksPath = path.resolve(__dirname, '../talker.json');
 
 const readFile = async () => {
     try {
